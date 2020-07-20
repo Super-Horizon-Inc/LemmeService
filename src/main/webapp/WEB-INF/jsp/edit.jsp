@@ -31,7 +31,7 @@
             margin: 0; 
             background-repeat: no-repeat; 
             background-attachment: fixed;
-            background-image: linear-gradient(rgba(4, 48, 48, 255), rgba(111, 109, 109, 255), transparent, rgba(4, 48, 48, 255))
+            background-image: linear-gradient(rgba(4, 48, 48, 255), rgba(111, 109, 109, 255), rgba(111, 109, 109, 255), rgba(4, 48, 48, 255))
         }
         img {
             height: 200px;
@@ -44,7 +44,7 @@
 <body>
 
     <header>  
-        <div class="text-center"><img src="/images/app-logo.png" alt="Lemme In logo"></div>       
+        <div class="text-center"><img src="/images/lemme-in-logo.png" alt="Lemme In logo"></div>       
     </header>
 
     <section>
