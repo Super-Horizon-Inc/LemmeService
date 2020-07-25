@@ -1,4 +1,4 @@
-package com.super_horizon.lemmein.models.documents;
+package com.super_horizon.lemmein.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +18,7 @@ public class Customer {
     private Boolean isNew;
     private Boolean isUpdated;
     private int visitCounter;
+    private String username;
 
     public Customer() {};
 
@@ -95,6 +96,14 @@ public class Customer {
 
     public int getVisitCounter() {
         return this.visitCounter;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return this.username;
     }
     
 }
