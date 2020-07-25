@@ -1,4 +1,4 @@
-package com.super_horizon.lemmein.models.repositories;
+package com.super_horizon.lemmein.repositories;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -2,8 +2,8 @@ package com.super_horizon.lemmein.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.super_horizon.lemmein.models.repositories.CustomerRepository;
-import com.super_horizon.lemmein.models.documents.*;
+import com.super_horizon.lemmein.repositories.CustomerRepository;
+import com.super_horizon.lemmein.models.*;
 import java.util.*;
 import java.time.LocalDate;
 
@@ -77,6 +77,11 @@ public class CustomerService {
         }
 
         throw new NullPointerException();
+    }
+
+    //custom for findAll
+    public Optional<List<Customer>> findAllByUsername(String username) {
+        return customerRepository.findAllByUsername(username);
     }
 
     public void save(Customer customer) {
