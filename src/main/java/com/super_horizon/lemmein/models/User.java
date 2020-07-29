@@ -3,6 +3,7 @@ package com.super_horizon.lemmein.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 // import org.springframework.data.mongodb.core.mapping.DBRef;
+import javax.validation.constraints.*;
 import java.util.*;
 
 @Document(collection = "users")
@@ -15,6 +16,9 @@ public class User {
 
     private String password;
 
+    @NotNull
+    private Discount discount;
+
     // @DBRef
     // private Set<Role> roles = new HashSet<>();
 
@@ -23,6 +27,7 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.discount = new Discount(EDiscountBy.valueOf(0).get().toString(),0,0,0);
     }
 
     public void setId (String id) {
@@ -48,6 +53,15 @@ public class User {
     public String getPassword () {
         return this.password;
     }
+
+    public void setDiscount (Discount discount) {
+        this.discount = discount;
+    }
+
+    public Discount getDiscount () {
+        return this.discount;
+    }
+    
 
     // public Set<Role> getRoles() {
     //     return roles;

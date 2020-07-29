@@ -60,30 +60,6 @@ public class CustomerController {
         }
     }
 
-    // @GetMapping
-    // public ResponseEntity<List<Customer>> searchAll() {
-    //     try {
-    //         List<Customer> customers = customerService.searchAll();          
-    //         return new ResponseEntity<> (customers, HttpStatus.OK);
-    //     }
-    //     catch (Exception ex) {
-    //         return new ResponseEntity<> (null, HttpStatus.EXPECTATION_FAILED);
-    //     }
-    // }
-
-
-    // @GetMapping(value="/{username}")
-    // public ResponseEntity<List<Customer>> showAllByUsername(@PathVariable String username) {
-    //     try {
-    //         List<Customer> customers = customerService.showAllByUsername(username);          
-    //         return new ResponseEntity<> (customers, HttpStatus.OK);
-    //     }
-    //     catch (Exception ex) {
-    //         return new ResponseEntity<> (null, HttpStatus.EXPECTATION_FAILED);
-    //     }
-    // }
-
-
     @PutMapping
     public ResponseEntity<Customer> update( @RequestBody Customer customer) {
         try {
