@@ -36,7 +36,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         try {
 
-            if (!request.getRequestURI().contains("auth")) {
+            if (!request.getRequestURI().contains("auth") && !request.getRequestURI().contains("update") && !request.getRequestURI().contains("edit")) {
             
                 String jwt = parseJwt(request);
 
