@@ -25,6 +25,7 @@ public class Customer {
     public Customer(Map<String, String> params) {
         this.phoneNumber = params.get("phoneNumber");
         this.email = params.get("email");
+        this.username = params.get("username");
         this.isNew = true;
         this.isUpdated = false;
         this.visitCounter = 0;

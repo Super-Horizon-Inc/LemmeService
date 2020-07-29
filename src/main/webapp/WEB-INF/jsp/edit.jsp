@@ -10,7 +10,7 @@
             <title>Update Your Information</title>
         </c:when>
         <c:otherwise>
-            <title>Number of Visits</title>
+            <title>Visiting Times</title>
         </c:otherwise>
     </c:choose>
 
@@ -181,7 +181,7 @@
 
                             $.ajax({
                                 type : 'PUT',
-                                url : 'http://localhost:8080/lemmein/admin',
+                                url : 'http://localhost:8080/lemme/customers',
                                 contentType: 'application/json',
                                 data : JSON.stringify({
                                     
@@ -196,7 +196,7 @@
                                 }),
                                 beforeSend : function(xhr) {
                                     
-                                    xhr.setRequestHeader("Authorization", "Basic " + btoa("${username}:${password}"));
+                                    xhr.setRequestHeader("Authorization", "Bearer " + btoa("${username}:${password}"));
                                     
                                 },
                                 success : function(data, status, xhr) {
@@ -214,7 +214,7 @@
 
                                 },
                                 error: function(xhr, status, error){
-                                    console.log(xhr);
+                                    //console.log(xhr);
                                     console.error(error);
                                 }
                             });

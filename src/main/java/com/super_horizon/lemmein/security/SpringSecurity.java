@@ -1,12 +1,12 @@
 package com.super_horizon.lemmein.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.http.HttpMethod;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.super_horizon.lemmein.security.jwt.AuthEntryPointJwt;
 
 import com.super_horizon.lemmein.security.jwt.*;
 import com.super_horizon.lemmein.security.services.UserDetailsServiceImpl;
@@ -34,25 +35,19 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
 	}
-
-    @Autowired
-    private AuthenticationEntryPoint authEntryPoint;
     
     @Override
 	protected void configure(HttpSecurity http) throws Exception {
-
         http
             .cors().and().csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            //.antMatcher("/apiurlneedsauth/**") : put before authorizeRequests() to authenticate only "/apiurlneedsauth/**"
             .authorizeRequests()
-            .antMatchers("/lemme/customers/**").permitAll()
-            //.antMatchers("/lemme/admin/**").access("hasRole('USER')")
-            .antMatchers("/lemme/user/**").permitAll()
+            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+            .antMatchers("/lemme/**").permitAll()
             .anyRequest().authenticated()
-            .and().httpBasic()           
-            .authenticationEntryPoint(authEntryPoint);
-            //.and().sessionManagement().disable();     
+            .and().httpBasic();            
             
             http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
@@ -60,15 +55,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}
-
-	// @Autowired
-	// public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    //     auth.inMemoryAuthentication()
-    //     .withUser("lemmein").password("{noop}lemmein0").roles("USER");
-    //     //.and().withUser("lemmein1").password("{noop}lemmein0").roles("ADMIN");
-    // }
-    
+	}    
     
     @Bean
 	@Override

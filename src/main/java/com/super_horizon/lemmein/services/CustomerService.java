@@ -79,10 +79,23 @@ public class CustomerService {
         throw new NullPointerException();
     }
 
-    //custom for findAll
     public Optional<List<Customer>> findAllByUsername(String username) {
         return customerRepository.findAllByUsername(username);
     }
+
+    // public Optional<List<Customer>> findAllQualified(String username, Discount discount) {
+        
+    //     List<Customer> customers = this.findAllByUsername(username).get();
+
+
+    //     for (Customer customer : customers) {
+    //         if (customer.getVisitCounter() >= discount.getVisitTimes()) {
+
+    //         }
+    //     }
+
+    //     //return 
+    // }
 
     public void save(Customer customer) {
         customerRepository.save(customer);

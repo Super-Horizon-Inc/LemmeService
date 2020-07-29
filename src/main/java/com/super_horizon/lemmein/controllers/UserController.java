@@ -1,14 +1,12 @@
 package com.super_horizon.lemmein.controllers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.objenesis.ObjenesisException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +31,7 @@ import com.super_horizon.lemmein.services.CustomerService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/lemme/user")
+@RequestMapping("/lemme/user/auth")
 public class UserController {
 
     @Autowired
@@ -49,27 +48,38 @@ public class UserController {
 
 	@Autowired
     JwtUtils jwtUtils;
+
     
     @PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-		Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        // if (!userRepository.existsByUsername(loginRequest.getUsername())) {
+        //     return ResponseEntity
+        //             .badRequest()
+        //             .body(new MessageResponse("Error: " + loginRequest.getUsername() + " does not exist."));
+        // }
+        
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));       
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-		
+        
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), customerService.findAllByUsername(userDetails.getUsername())));
+        Discount discount = userRepository.findByUsername(userDetails.getUsername()).get().getDiscount();
+        discount.setBy(EDiscountBy.valueOf(discount.getBy()).getValue().toString());
+        
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), discount, customerService.findAllByUsername(userDetails.getUsername())));
 	}
+
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+					.body(new MessageResponse("Error: " + signUpRequest.getUsername() + " is already taken!"));
 		}
 
 		User user = new User(signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()));
@@ -83,10 +93,39 @@ public class UserController {
         return this.authenticateUser(loginRequest);      
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<?> logoutUser() {
-        SecurityContextHolder.getContext().setAuthentication(null);
-        return ResponseEntity.ok(new MessageResponse("Logout successfully."));
+    
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutCustomer(@Valid @RequestBody LoginRequest loginRequest) {
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(null);
+            return ResponseEntity.ok(new MessageResponse("Logout successfully."));
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Wrong password."));
+        }       
+    }
+
+    
+    @PutMapping("/setting")
+    public ResponseEntity<?> editSetting(@RequestBody User user) {
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            
+            Optional<User> optUser = userRepository.findByUsername(user.getUsername());
+            User _user = optUser.get();
+
+            user.getDiscount().setBy(EDiscountBy.valueOf(Integer.parseInt(user.getDiscount().getBy())).get().toString());
+            _user.setDiscount(user.getDiscount());
+
+            userRepository.save(_user);
+            return ResponseEntity.ok(new MessageResponse("Setting saved successfully."));
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Wrong password."));
+        }
     }
    
 }

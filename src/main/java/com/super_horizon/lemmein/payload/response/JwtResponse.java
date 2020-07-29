@@ -1,7 +1,7 @@
 package com.super_horizon.lemmein.payload.response;
 
 import java.util.*;
-import com.super_horizon.lemmein.models.Customer;
+import com.super_horizon.lemmein.models.*;
 
 public class JwtResponse {
 	private String token;
@@ -9,11 +9,13 @@ public class JwtResponse {
 	private String id;
     private String username;
     private Optional<List<Customer>> customers;
+    private Discount discount;
 
-    public JwtResponse(String accessToken, String id, String username, Optional<List<Customer>> customers) {
+    public JwtResponse(String accessToken, String id, String username, Discount discount, Optional<List<Customer>> customers) {
 		this.token = accessToken;
 		this.id = id;
         this.username = username;
+        this.discount = discount;
         this.customers = customers;
 	}
 
@@ -48,6 +50,14 @@ public class JwtResponse {
 	public void setUsername(String username) {
 		this.username = username;
     }
+
+    public Discount getDiscount() {
+		return this.discount;
+	}
+
+	public void setDiscount(Discount discount) {
+		this.discount = discount;
+	}
     
     public Optional<List<Customer>> getCustomers() {
 		return this.customers;
