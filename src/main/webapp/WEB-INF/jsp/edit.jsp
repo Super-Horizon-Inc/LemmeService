@@ -117,11 +117,6 @@
                         </div>
                     </div>
 
-
-                    <spring:eval expression="@environment.getProperty('admin.username')" var="username" />
-                    <spring:eval expression="@environment.getProperty('admin.password')" var="password" />
-
-
                     <script>
                         // Example starter JavaScript for disabling form submissions if there are invalid fields
                         (function() {
@@ -181,7 +176,7 @@
 
                             $.ajax({
                                 type : 'PUT',
-                                url : 'http://localhost:8080/lemme/customers',
+                                url : 'http://localhost:8080/lemme/customers/update',
                                 contentType: 'application/json',
                                 data : JSON.stringify({
                                     
@@ -194,11 +189,6 @@
                                     email: document.getElementsByName("email")[0].value != "" ? document.getElementsByName("email")[0].value : "${customer.email}",
 
                                 }),
-                                beforeSend : function(xhr) {
-                                    
-                                    xhr.setRequestHeader("Authorization", "Bearer " + btoa("${username}:${password}"));
-                                    
-                                },
                                 success : function(data, status, xhr) {
                                     $('#visitConfirmModal').modal('show'); 
                                     
