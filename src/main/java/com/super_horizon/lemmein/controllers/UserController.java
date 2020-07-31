@@ -26,7 +26,7 @@ import com.super_horizon.lemmein.payload.response.*;
 import com.super_horizon.lemmein.repositories.*;
 import com.super_horizon.lemmein.security.services.*;
 import com.super_horizon.lemmein.security.jwt.*;
-import com.super_horizon.lemmein.services.CustomerService;
+import com.super_horizon.lemmein.services.*;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -49,6 +49,9 @@ public class UserController {
 	@Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    UserService userService;
+
     
     @PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -70,7 +73,7 @@ public class UserController {
         Discount discount = userRepository.findByUsername(userDetails.getUsername()).get().getDiscount();
         discount.setBy(EDiscountBy.valueOf(discount.getBy()).getValue().toString());
         
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), discount, customerService.findAllByUsername(userDetails.getUsername())));
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), discount, userService.findCustomersByUsername(userDetails.getUsername())));
 	}
 
 
