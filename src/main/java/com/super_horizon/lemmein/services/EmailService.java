@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
+import java.util.*;
 
 @Service
 public class EmailService {
@@ -18,6 +19,12 @@ public class EmailService {
         msg.setSubject("Lemmein");
         msg.setText("Please click on the link below to confirm\n" + "http://localhost:8080/lemme/customers/" + id + "/edit");
         javaMailSender.send(msg);
+    }
+
+    public void sendEmails(List<SimpleMailMessage> emails) {
+        for(SimpleMailMessage simpleMailMessage : emails) {
+            javaMailSender.send(simpleMailMessage);
+        }
     }
 
 }

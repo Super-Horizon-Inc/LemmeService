@@ -19,6 +19,8 @@ public class User {
     @NotNull
     private Discount discount;
 
+    private List<Customer> customers;
+
     // @DBRef
     // private Set<Role> roles = new HashSet<>();
 
@@ -60,6 +62,17 @@ public class User {
 
     public Discount getDiscount () {
         return this.discount;
+    }
+
+    public void setCustomers (Customer customer) {
+        if (this.customers == null) {
+            this.customers = new ArrayList<Customer>();
+        }
+        this.customers.add(customer);
+    }
+
+    public List<Customer> getCustomers () {
+        return this.customers;
     }
     
 

@@ -8,10 +8,10 @@ public class JwtResponse {
 	private String type = "Bearer";
 	private String id;
     private String username;
-    private Optional<List<Customer>> customers;
+    private List<Customer> customers;
     private Discount discount;
 
-    public JwtResponse(String accessToken, String id, String username, Discount discount, Optional<List<Customer>> customers) {
+    public JwtResponse(String accessToken, String id, String username, Discount discount, List<Customer> customers) {
 		this.token = accessToken;
 		this.id = id;
         this.username = username;
@@ -59,11 +59,11 @@ public class JwtResponse {
 		this.discount = discount;
 	}
     
-    public Optional<List<Customer>> getCustomers() {
+    public List<Customer> getCustomers() {
 		return this.customers;
 	}
 
-	public void setCustomers(Optional<List<Customer>> customers) {
+	public void setCustomers(List<Customer> customers) {
 		this.customers = customers;
 	}
 

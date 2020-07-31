@@ -18,14 +18,14 @@ public class Customer {
     private Boolean isNew;
     private Boolean isUpdated;
     private int visitCounter;
-    private String username;
+    //private String username;
 
     public Customer() {};
 
     public Customer(Map<String, String> params) {
         this.phoneNumber = params.get("phoneNumber");
         this.email = params.get("email");
-        this.username = params.get("username");
+        //this.username = params.get("username");
         this.isNew = true;
         this.isUpdated = false;
         this.visitCounter = 0;
@@ -99,12 +99,12 @@ public class Customer {
         return this.visitCounter;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    // public void setUsername(String username) {
+    //     this.username = username;
+    // }
 
-    public String getUsername() {
-        return this.username;
-    }
+    // public String getUsername() {
+    //     return this.username;
+    // }
     
 }

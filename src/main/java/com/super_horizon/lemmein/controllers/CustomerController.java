@@ -4,7 +4,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import com.super_horizon.lemmein.models.Customer;
-import com.super_horizon.lemmein.services.CustomerService;
+import com.super_horizon.lemmein.services.*;
 import com.super_horizon.lemmein.services.EmailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,15 +24,24 @@ public class CustomerController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping
     public ResponseEntity<List<Customer>> showOrAdd(@RequestBody Map<String, String> query) {
         try {
 
+            String username = query.get("username");
+            query.remove("username");
+
             List<Customer> customers = customerService.showOrAdd(query);
             Customer customer = customers.get(0);
 
-            if (customer.getIsNew() && customer.getEmail() != null) {
-                emailService.sendEmail(customer.getEmail(), customer.getId());
+            if (customer.getIsNew()) {
+                if (customer.getEmail() != null) {
+                    emailService.sendEmail(customer.getEmail(), customer.getId());
+                }
+                userService.addCustomer(username, customer);
             }
 
             return new ResponseEntity<> (customers, HttpStatus.CREATED);
