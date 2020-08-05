@@ -1,5 +1,6 @@
 package com.super_horizon.lemmein.models;
 
+
 public class Discount {
     
     private String by;
@@ -7,6 +8,7 @@ public class Discount {
     private int type;
     private int visitTimes;
 
+    
     public Discount(String by, int amount, int type, int visitTimes) {
         this.by = by;
         this.amount = amount;

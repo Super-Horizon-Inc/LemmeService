@@ -1,10 +1,17 @@
 package com.super_horizon.lemmein.repositories;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
+
+import com.mongodb.client.ClientSession;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.super_horizon.lemmein.configuration.MongoConfig;
+
 
 public class RepositoryImpl<T> implements IRepository<T> {
 
@@ -17,15 +24,13 @@ public class RepositoryImpl<T> implements IRepository<T> {
     }
 
     @Override
+    //@Transactional
     public List<T> findOrCreate(Map<String, String> dynamicQuery) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        
-        List<T> result = new ArrayList<>();   
-            
-        Query queryDocument = new Query();
-        List<Criteria> criteria = new ArrayList<>();    
 
-        if (this.mongoTemplate.collectionExists(this.documentClass)) {
-
+            List<T> result = new ArrayList<>();             
+            Query queryDocument = new Query();
+            List<Criteria> criteria = new ArrayList<>();    
+                     
             // generate query to run it against db 
             for (Map.Entry<String, String> entry : dynamicQuery.entrySet()) {
                 String property = (String) entry.getKey();
@@ -38,8 +43,8 @@ public class RepositoryImpl<T> implements IRepository<T> {
             // get the collection from db and run the query
             // then add result into final list of documents
             List<T> documents = this.mongoTemplate.find(queryDocument, this.documentClass);
-
-                // if document does not exist, then create one
+            
+            // if document does not exist, then create one
             if (documents.isEmpty()) {
 
                 T obj = this.documentClass.getConstructor(Map.class).newInstance(dynamicQuery);                   
@@ -50,17 +55,15 @@ public class RepositoryImpl<T> implements IRepository<T> {
             else {
                 
                 for (T document : documents) {
-                    Method method = document.getClass().getMethod("setIsNew", Boolean.class);
-                    method.invoke(document, false);
-                    this.mongoTemplate.save(document);
+                    // Method method = document.getClass().getMethod("setIsNew", Boolean.class);
+                    // method.invoke(document, false);
+                    // this.mongoTemplate.save(document);
                     result.add(document);
                 }
 
             }
-
-        }
         
-        return result;
-    }
+            return result;
+        }
 
 }

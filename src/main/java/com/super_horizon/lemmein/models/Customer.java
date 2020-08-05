@@ -1,8 +1,9 @@
 package com.super_horizon.lemmein.models;
 
+import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.*;
+
 
 @Document(collection = "customers")
 public class Customer {
@@ -18,14 +19,13 @@ public class Customer {
     private Boolean isNew;
     private Boolean isUpdated;
     private int visitCounter;
-    //private String username;
+
 
     public Customer() {};
 
     public Customer(Map<String, String> params) {
         this.phoneNumber = params.get("phoneNumber");
         this.email = params.get("email");
-        //this.username = params.get("username");
         this.isNew = true;
         this.isUpdated = false;
         this.visitCounter = 0;
@@ -97,14 +97,5 @@ public class Customer {
 
     public int getVisitCounter() {
         return this.visitCounter;
-    }
-
-    // public void setUsername(String username) {
-    //     this.username = username;
-    // }
-
-    // public String getUsername() {
-    //     return this.username;
-    // }
-    
+    }    
 }

@@ -10,12 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.super_horizon.lemmein.models.User;
 import com.super_horizon.lemmein.repositories.UserRepository;
 
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     
     @Autowired
 	UserRepository userRepository;
 
+    
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
