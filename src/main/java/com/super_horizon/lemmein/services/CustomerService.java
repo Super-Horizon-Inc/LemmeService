@@ -1,11 +1,15 @@
 package com.super_horizon.lemmein.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.super_horizon.lemmein.repositories.CustomerRepository;
-import com.super_horizon.lemmein.models.*;
 import java.util.*;
 import java.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.lang.reflect.InvocationTargetException;
+
+import com.super_horizon.lemmein.repositories.CustomerRepository;
+import com.super_horizon.lemmein.models.*;
+
 
 @Service
 public class CustomerService {
@@ -13,15 +17,29 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public List<Customer> showOrAdd(Map<String, String> query) {
+    @Autowired
+    private UserService userService;
 
-        try {
+    @Autowired
+    private EmailService emailService;
+
+    @Transactional
+    public List<Customer> showOrAdd(Map<String, String> query) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+            String username = query.get("username");
+            query.remove("username");
             List<Customer> customers = customerRepository.findOrCreate(query);
-            return customers;
-        }
-        catch (Exception ex) {
-            return new ArrayList<Customer>();
-        }        
+            Customer customer = customers.get(0);
+            if (customer.getIsNew()) {
+                if (customer.getEmail() != null) {
+                    emailService.sendEmail(customer.getEmail(), customer.getId());
+                }
+                if (!userService.isNewCustomer(username, customer.getId())) {
+                    userService.addCustomerRef(username, customer.getId());
+                }               
+            }
+            
+            return customers;    
     }
 
     public Customer findById(String id) {
@@ -35,6 +53,7 @@ public class CustomerService {
         throw new NullPointerException();       
     }
 
+    @Transactional
     public Customer update(Customer customer) {
 
         Customer _customer = this.findById(customer.getId());
@@ -44,6 +63,7 @@ public class CustomerService {
 
         _customer.setPhoneNumber(phoneNumber);   
         _customer.setEmail(customer.getEmail());
+        _customer.setIsNew(false);
 
         if (customer.getDob().contains("-")) {
             LocalDate dob = LocalDate.parse(customer.getDob());
@@ -63,7 +83,7 @@ public class CustomerService {
         
         _customer.setIsUpdated(true);
 
-        this.save(_customer);
+        customerRepository.save(_customer);
 
         return _customer;
     }
@@ -79,8 +99,12 @@ public class CustomerService {
         throw new NullPointerException();
     }
 
-    public void save(Customer customer) {
-        customerRepository.save(customer);
+    @Transactional
+    public void sendEmail(Customer customer) {
+        Customer _customer = findById(customer.getId());
+        _customer.setIsUpdated(false);
+        customerRepository.save(_customer);
+        emailService.sendEmail(customer.getEmail(), customer.getId());
     }
 
 }

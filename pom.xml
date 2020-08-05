@@ -105,6 +105,13 @@
             <version>6.1.5.Final</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>3.0.2.RELEASE</version>
+        </dependency>
+        
 
 	</dependencies>
 

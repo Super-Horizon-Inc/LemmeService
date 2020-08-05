@@ -1,6 +1,6 @@
 package com.super_horizon;
 
-import com.super_horizon.lemmein.repositories.CustomerRepository;
+import com.super_horizon.lemmein.repositories.*;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 // import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +21,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 // import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackageClasses = CustomerRepository.class)
+//@EnableMongoRepositories(basePackageClasses = {CustomerRepository.class, UserRepository.class})
 public class ServerApplication extends SpringBootServletInitializer {
 
     @Override

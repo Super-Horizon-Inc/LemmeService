@@ -3,17 +3,17 @@ package com.super_horizon.lemmein.payload.response;
 import java.util.*;
 import com.super_horizon.lemmein.models.*;
 
+
 public class JwtResponse {
 	private String token;
 	private String type = "Bearer";
-	private String id;
     private String username;
     private List<Customer> customers;
     private Discount discount;
 
-    public JwtResponse(String accessToken, String id, String username, Discount discount, List<Customer> customers) {
+    
+    public JwtResponse(String accessToken, String username, Discount discount, List<Customer> customers) {
 		this.token = accessToken;
-		this.id = id;
         this.username = username;
         this.discount = discount;
         this.customers = customers;
@@ -33,14 +33,6 @@ public class JwtResponse {
 
 	public void setTokenType(String tokenType) {
 		this.type = tokenType;
-	}
-
-	public String getId() {
-		return this.id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getUsername() {

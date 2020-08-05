@@ -1,8 +1,8 @@
 package com.super_horizon.lemmein.payload.request;
 
-
 import javax.validation.constraints.*;
  
+
 public class SignupRequest {
 
     @NotBlank
@@ -14,6 +14,7 @@ public class SignupRequest {
     @Size(min = 6, max = 40)
     private String password;
   
+    
     public String getUsername() {
         return username;
     }

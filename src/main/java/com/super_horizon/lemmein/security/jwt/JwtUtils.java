@@ -1,15 +1,15 @@
 package com.super_horizon.lemmein.security.jwt;
 
 import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.super_horizon.lemmein.security.services.UserDetailsImpl;
-import io.jsonwebtoken.*;
+
 
 @Component
 public class JwtUtils {
@@ -21,6 +21,7 @@ public class JwtUtils {
 	@Value("${jwtExpirationMs}")
 	private int jwtExpirationMs;
 
+    
 	public String generateJwtToken(Authentication authentication) {
 
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();

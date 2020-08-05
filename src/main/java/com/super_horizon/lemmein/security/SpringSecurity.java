@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,10 +14,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.super_horizon.lemmein.security.jwt.AuthEntryPointJwt;
 
+import com.super_horizon.lemmein.security.jwt.AuthEntryPointJwt;
 import com.super_horizon.lemmein.security.jwt.*;
 import com.super_horizon.lemmein.security.services.UserDetailsServiceImpl;
+
 
 @Configuration
 @EnableWebSecurity
@@ -34,21 +34,23 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
-	}
+    }
+
     
     @Override
 	protected void configure(HttpSecurity http) throws Exception {
+
         http
             .cors().and().csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             //.antMatcher("/apiurlneedsauth/**") : put before authorizeRequests() to authenticate only "/apiurlneedsauth/**"
             .authorizeRequests()
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()        
             .antMatchers("/lemme/**").permitAll()
             .anyRequest().authenticated()
-            .and().httpBasic();            
-            
+            .and().httpBasic();
+                             
             http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
     

@@ -1,16 +1,12 @@
 package com.super_horizon.lemmein.security.services;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
+import java.util.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.super_horizon.lemmein.models.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -22,6 +18,7 @@ public class UserDetailsImpl implements UserDetails {
     
     @JsonIgnore
 	private String password;
+    
     
     public UserDetailsImpl(String id, String username, String password) {
 		this.id = id;

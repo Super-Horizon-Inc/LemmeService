@@ -1,21 +1,18 @@
 package com.super_horizon.lemmein.configuration;
 
+import java.util.*;
+import java.util.Locale;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatterBuilder;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.context.annotation.Configuration;
-import com.super_horizon.lemmein.models.*;
-import java.util.*;
-
-//import javax.mail.internet.MimeMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import com.super_horizon.lemmein.repositories.UserRepository;
-import com.super_horizon.lemmein.services.EmailService;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.Locale;
-import org.springframework.mail.SimpleMailMessage;
+import com.super_horizon.lemmein.repositories.*;
+import com.super_horizon.lemmein.services.EmailService;
+import com.super_horizon.lemmein.models.*;
 
 
 @Configuration
@@ -24,6 +21,9 @@ public class Scheduler {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private EmailService emailService;
@@ -39,7 +39,8 @@ public class Scheduler {
             if (discount.getAmount() != 0) {
                 switch (user.getDiscount().getBy()) {
                     case "VISITING_TIMES" : {
-                        for (Customer customer: user.getCustomers()) {
+                        for (String ref: user.getCustomersRef()) {
+                            Customer customer = customerRepository.findById(ref).get();
                             if (!customer.getIsNew() && customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
                                 SimpleMailMessage email = new SimpleMailMessage();
                                 
@@ -54,7 +55,8 @@ public class Scheduler {
                     }
 
                     case "DOB" : {
-                        for (Customer customer: user.getCustomers()) {
+                        for (String ref: user.getCustomersRef()) {
+                            Customer customer = customerRepository.findById(ref).get();
                             LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMMM d, yyyy").toFormatter(Locale.US));
                             LocalDate now = LocalDate.now().plusDays(7);
                             
@@ -72,7 +74,8 @@ public class Scheduler {
                     }
 
                     default : {
-                        for (Customer customer: user.getCustomers()) {
+                        for (String ref: user.getCustomersRef()) {
+                            Customer customer = customerRepository.findById(ref).get();
                             if (!customer.getIsNew() && customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
                                 SimpleMailMessage email = new SimpleMailMessage();
                                 

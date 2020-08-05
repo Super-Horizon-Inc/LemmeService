@@ -2,6 +2,7 @@ package com.super_horizon.lemmein.payload.request;
 
 import javax.validation.constraints.NotBlank;
 
+
 public class LoginRequest {
     
 	@NotBlank
@@ -9,6 +10,7 @@ public class LoginRequest {
 
 	@NotBlank
     private String password;
+    
     
 	public String getUsername() {
 		return username;

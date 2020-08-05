@@ -1,10 +1,11 @@
 package com.super_horizon.lemmein.models;
 
+import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-// import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.*;
-import java.util.*;
+// import org.springframework.data.mongodb.core.mapping.DBRef;
+
 
 @Document(collection = "users")
 public class User {
@@ -19,10 +20,11 @@ public class User {
     @NotNull
     private Discount discount;
 
-    private List<Customer> customers;
+    private List<String> customersRef = new ArrayList<String>();
 
     // @DBRef
     // private Set<Role> roles = new HashSet<>();
+
 
     public User() {}
 
@@ -64,18 +66,17 @@ public class User {
         return this.discount;
     }
 
-    public void setCustomers (Customer customer) {
-        if (this.customers == null) {
-            this.customers = new ArrayList<Customer>();
-        }
-        this.customers.add(customer);
+    public void setCustomersRef (String customerRef) {
+        // if (this.customersRef == null) {
+        //     this.customersRef = new ArrayList<String>();
+        // }
+        this.customersRef.add(customerRef);
     }
 
-    public List<Customer> getCustomers () {
-        return this.customers;
+    public List<String> getCustomersRef () {
+        return this.customersRef;
     }
     
-
     // public Set<Role> getRoles() {
     //     return roles;
     // }
