@@ -1,7 +1,7 @@
 package com.super_horizon;
 
-import com.super_horizon.lemmein.repositories.*;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+// import com.super_horizon.lemmein.repositories.*;
+// import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 // import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
