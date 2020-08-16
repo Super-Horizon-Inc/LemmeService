@@ -37,7 +37,7 @@ public class RepositoryImpl<E> implements IRepository<E> {
             E document = this.mongoTemplate.findOne(queryDocument, this.documentClass);
             
             // if document does not exist, then create one
-            if (document != null) {
+            if (document == null) {
 
                 E obj = this.documentClass.getConstructor(Map.class).newInstance(dynamicQuery);                   
                 E savedDocument = this.mongoTemplate.save(obj);                   

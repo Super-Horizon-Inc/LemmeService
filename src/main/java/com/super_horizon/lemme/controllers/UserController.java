@@ -47,6 +47,12 @@ public class UserController {
 
         try {
             userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+
+            //need to handle correctly
+            if (userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword()) == null) {
+                throw new Exception();
+            }
+
             userService.setAuthentication(null);
             return ResponseEntity.ok(new MessageResponse("Logout successfully."));
         }
@@ -60,6 +66,12 @@ public class UserController {
 
         try {
             userService.authenticateUser(user.getUsername(), user.getPassword());
+
+             //need to handle correctly
+             if (userService.authenticateUser(user.getUsername(), user.getPassword()) == null) {
+                throw new Exception();
+            }
+
             userService.setting(user);
             return ResponseEntity.ok(new MessageResponse("Setting saved successfully."));
         }
