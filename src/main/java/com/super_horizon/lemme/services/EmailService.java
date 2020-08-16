@@ -1,8 +1,5 @@
 package com.super_horizon.lemme.services;
 
-import java.util.*;
-
-import javax.mail.SendFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,8 +9,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.MailSendException;
 
-
-
 @Service
 public class EmailService {
     
@@ -21,6 +16,7 @@ public class EmailService {
     private JavaMailSender javaMailSender;
 
     public boolean sendEmail(String email, String id) {
+
         try{
             SimpleMailMessage msg = new SimpleMailMessage();
             msg.setTo(email);
@@ -36,28 +32,9 @@ public class EmailService {
         catch (MailSendException e) {          
         }
         catch (MailException e) {
-
         }
         return false;
         
-    }
-
-    public boolean sendEmails(List<SimpleMailMessage> emails) {
-        try{
-            for(SimpleMailMessage simpleMailMessage : emails) {
-                javaMailSender.send(simpleMailMessage);
-            }
-            return true;
-        }
-        catch (MailParseException e) {
-        }
-        catch (MailAuthenticationException e) {          
-        }
-        catch (MailSendException e) {           
-        }
-        catch (MailException e) {           
-        }
-        return false;
     }
 
 }

@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public class CustomerRepositoryImpl extends RepositoryImpl<Customer> {
 
     private final MongoTemplate mongoTemplate;
-
     
     @Autowired
     public CustomerRepositoryImpl(MongoTemplate mongoTemplate) {

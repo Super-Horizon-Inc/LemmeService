@@ -1,7 +1,6 @@
 package com.super_horizon;
 
 import com.super_horizon.lemme.repositories.CustomerRepositoryTest;
-import com.super_horizon.lemme.services.EmailService;
 import com.super_horizon.lemme.services.EmailServiceTest;
 import com.super_horizon.lemme.services.UserServiceTest;
 
@@ -23,7 +22,7 @@ class ServerApplicationTests {
 
 	@Test
 	void contextLoads() {
-        // customerRepositoryTest.shouldReturnEmptyList();
+        // customerRepositoryTest.shouldReturnNull();
         // emailServiceTest.shouldNotSendEmail();
         // emailServiceTest.shouldSendEmail();
         // userServiceTest.shouldNotBeNewCustomer();

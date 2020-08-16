@@ -14,8 +14,6 @@ import com.super_horizon.lemme.models.Discount;
 import com.super_horizon.lemme.models.User;
 import com.super_horizon.lemme.repositories.CustomerRepository;
 import com.super_horizon.lemme.repositories.UserRepository;
-import com.super_horizon.lemme.services.EmailService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,8 +30,8 @@ public class Scheduler {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Autowired
-    private EmailService emailService;
+    // @Autowired
+    // private EmailService emailService;
     
     @Scheduled(fixedRate = 5000)
     public void sendDiscountEmails() {
@@ -50,7 +48,7 @@ public class Scheduler {
                         case "VISITING_TIMES" : {
                             for (String ref: user.getCustomersRef()) {
                                 Customer customer = customerRepository.findById(ref).get();
-                                if (!customer.getIsNew() && customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
+                                if (customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
                                     SimpleMailMessage email = new SimpleMailMessage();
                                     
                                     email.setTo(customer.getEmail());
@@ -69,7 +67,7 @@ public class Scheduler {
                                 LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMMM d, yyyy").toFormatter(Locale.US));
                                 LocalDate now = LocalDate.now().plusDays(7);
                                 
-                                if (!customer.getIsNew() && dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
+                                if (dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
                                     SimpleMailMessage email = new SimpleMailMessage();
                                     
                                     email.setTo(customer.getEmail());
@@ -85,7 +83,7 @@ public class Scheduler {
                         default : {
                             for (String ref: user.getCustomersRef()) {
                                 Customer customer = customerRepository.findById(ref).get();
-                                if (!customer.getIsNew() && customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
+                                if (customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
                                     SimpleMailMessage email = new SimpleMailMessage();
                                     
                                     email.setTo(customer.getEmail());
@@ -97,7 +95,7 @@ public class Scheduler {
                                 LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMMM d, yyyy").toFormatter(Locale.US));
                                 LocalDate now = LocalDate.now().plusDays(7);
 
-                                if (!customer.getIsNew() && dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
+                                if (dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
                                     SimpleMailMessage email = new SimpleMailMessage();
                                     
                                     email.setTo(customer.getEmail());
@@ -113,7 +111,7 @@ public class Scheduler {
                     }
                 }               
             }
-            emailService.sendEmails(emails);
+            // emailService.sendEmails(emails);
         }
         catch (NoSuchElementException e) {
         }

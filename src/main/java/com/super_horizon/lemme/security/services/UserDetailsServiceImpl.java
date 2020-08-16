@@ -5,12 +5,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.NoSuchElementException;
-
 import com.super_horizon.lemme.models.User;
 import com.super_horizon.lemme.repositories.UserRepository;
-
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -18,7 +15,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
 	UserRepository userRepository;
 
-    
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) {

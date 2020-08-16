@@ -35,8 +35,6 @@ public class UserService {
     @Autowired
     PasswordEncoder encoder;
 
-
-    //@Transactional
     public void addCustomerRef(String username, String customerRef) {
         try{
             User user = userRepository.findByUsername(username).get();           
@@ -108,12 +106,14 @@ public class UserService {
     public JwtResponse signup(String username, String password) {
         try {
             User user = new User(username, encoder.encode(password));
-            userRepository.save(user);       
+            userRepository.save(user); 
             return signin(username, password);
         }
         catch (IllegalArgumentException e) {
-            return null;
         }
+        catch (Exception e) {
+        }
+        return null;
     }
 
     @Transactional

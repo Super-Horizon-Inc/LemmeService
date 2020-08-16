@@ -7,9 +7,7 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
 import com.super_horizon.lemme.security.services.UserDetailsImpl;
-
 
 @Component
 public class JwtUtils {
@@ -21,25 +19,27 @@ public class JwtUtils {
 	@Value("${jwtExpirationMs}")
 	private int jwtExpirationMs;
 
-    
 	public String generateJwtToken(Authentication authentication) {
 
         try {
-            UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
+            UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
             return Jwts.builder()
 				.setSubject((userPrincipal.getUsername()))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
 				.compact();
+
         }
         catch (ClassCastException e) {
             return null;
-        }		
+		}	
+			
 	}
 
 	public String getUserNameFromJwtToken(String token) {
+
         try {
             return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
         }
@@ -54,10 +54,12 @@ public class JwtUtils {
 		} catch (IllegalArgumentException e) {
 			logger.error("JWT claims string is empty: {}", e.getMessage());
 		}
-        return null;
+		return null;
+		
 	}
 
 	public boolean validateJwtToken(String authToken) {
+
 		try {
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
 			return true;
@@ -78,5 +80,7 @@ public class JwtUtils {
 			logger.error("JWT claims string is empty: {}", e.getMessage());
 		}
 		return false;
+		
 	}
+
 }

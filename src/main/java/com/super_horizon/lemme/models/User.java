@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.*;
 // import org.springframework.data.mongodb.core.mapping.DBRef;
 
-
 @Document(collection = "users")
 public class User {
     
@@ -24,7 +23,6 @@ public class User {
 
     // @DBRef
     // private Set<Role> roles = new HashSet<>();
-
 
     public User() {}
 
@@ -73,9 +71,6 @@ public class User {
     }
 
     public void setCustomersRef (String customerRef) {
-        // if (this.customersRef == null) {
-        //     this.customersRef = new ArrayList<String>();
-        // }
         this.customersRef.add(customerRef);
     }
 

@@ -4,24 +4,20 @@ import java.util.*;
 import java.lang.reflect.InvocationTargetException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
-// import java.lang.reflect.Method;
-// import org.springframework.transaction.annotation.Transactional;
 
-
-public class RepositoryImpl<T> implements IRepository<T> {
+public class RepositoryImpl<E> implements IRepository<E> {
 
     protected final MongoTemplate mongoTemplate;
-    private Class<T> documentClass;
+    private Class<E> documentClass;
 
-    public RepositoryImpl(MongoTemplate mongoTemplate, Class<T> type) {
+    public RepositoryImpl(MongoTemplate mongoTemplate, Class<E> type) {
         this.documentClass = type;
         this.mongoTemplate = mongoTemplate;
     }
 
     @Override
-    //@Transactional
-    public List<T> findOrCreate(Map<String, String> dynamicQuery) {
-        List<T> result = new ArrayList<>();    
+    public E findOrCreate(Map<String, String> dynamicQuery) {
+
         try{
                      
             Query queryDocument = new Query();
@@ -38,25 +34,18 @@ public class RepositoryImpl<T> implements IRepository<T> {
 
             // get the collection from db and run the query
             // then add result into final list of documents
-            List<T> documents = this.mongoTemplate.find(queryDocument, this.documentClass);
+            E document = this.mongoTemplate.findOne(queryDocument, this.documentClass);
             
             // if document does not exist, then create one
-            if (documents.isEmpty()) {
+            if (document != null) {
 
-                T obj = this.documentClass.getConstructor(Map.class).newInstance(dynamicQuery);                   
-                T savedDocument = this.mongoTemplate.save(obj);                   
-                result.add(savedDocument);
+                E obj = this.documentClass.getConstructor(Map.class).newInstance(dynamicQuery);                   
+                E savedDocument = this.mongoTemplate.save(obj);                   
+                return savedDocument;
 
             }
             else {
-                
-                for (T document : documents) {
-                    // Method method = document.getClass().getMethod("setIsNew", Boolean.class);
-                    // method.invoke(document, false);
-                    // this.mongoTemplate.save(document);
-                    result.add(document);
-                }
-
+                return document;
             }
             
         }
@@ -84,9 +73,9 @@ public class RepositoryImpl<T> implements IRepository<T> {
         }
         catch (SecurityException e) {       
         }
-        
-        return result;
+
+        return null;
+
     }
-        
 
 }

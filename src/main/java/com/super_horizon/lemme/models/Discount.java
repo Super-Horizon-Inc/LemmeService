@@ -7,7 +7,6 @@ public class Discount {
     private int amount;
     private int type;
     private int visitTimes;
-
     
     public Discount(String by, int amount, int type, int visitTimes) {
         this.by = by;

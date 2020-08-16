@@ -18,7 +18,6 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
 	private String password;
     
-    
     public UserDetailsImpl(String id, String username, String password) {
 		this.id = id;
 		this.username = username;
@@ -31,7 +30,8 @@ public class UserDetailsImpl implements UserDetails {
             user.getId(), 
             user.getUsername(), 
             user.getPassword() 
-        );
+		);
+		
     }
 
 	public String getId() {
@@ -75,12 +75,14 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public boolean equals(Object o) {
+
 		if (this == o)
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
 		UserDetailsImpl user = (UserDetailsImpl) o;
 		return Objects.equals(id, user.id);
+		
 	}
 
 }

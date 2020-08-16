@@ -14,9 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.super_horizon.lemme.security.services.UserDetailsServiceImpl;
-
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
@@ -27,7 +25,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private UserDetailsServiceImpl userDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
-
     
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
@@ -61,7 +58,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         }
-
         
     }
 

@@ -4,30 +4,24 @@ import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 @Document(collection = "customers")
 public class Customer {
     
     @Id
     private String id;
-
     private String phoneNumber;
     private String email;
     private String dob;
     private String firstName;
     private String lastName;
-    private Boolean isNew;
-    private Boolean isUpdated;
     private int visitCounter;
 
+    public Customer() {
 
-    public Customer() {};
+    };
 
     public Customer(Map<String, String> params) {
         this.phoneNumber = params.get("phoneNumber");
-        this.email = params.get("email");
-        this.isNew = true;
-        this.isUpdated = false;
         this.visitCounter = 0;
     }
 
@@ -74,22 +68,6 @@ public class Customer {
     public String getLastName() {
         return this.lastName;
     } 
-
-    public void setIsNew(Boolean isNew) {
-        this.isNew = isNew;
-    }
-
-    public Boolean getIsNew() {
-        return this.isNew;
-    }
-
-    public void setIsUpdated(Boolean isUpdated) {
-        this.isUpdated = isUpdated;
-    }
-
-    public Boolean getIsUpdated() {
-        return this.isUpdated;
-    }
 
     public void setVisitCounter(int visitCounter) {
         this.visitCounter = visitCounter;

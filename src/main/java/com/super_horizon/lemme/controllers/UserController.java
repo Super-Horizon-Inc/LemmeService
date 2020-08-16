@@ -10,7 +10,6 @@ import com.super_horizon.lemme.payload.request.*;
 import com.super_horizon.lemme.payload.response.*;
 import com.super_horizon.lemme.services.*;
 
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/lemme/user/auth")
@@ -18,7 +17,6 @@ public class UserController {
 
     @Autowired
     UserService userService;
-    
 
     @PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -44,7 +42,6 @@ public class UserController {
         return ResponseEntity.ok(jwtResponse);            
     }
 
-    
     @PostMapping("/logout")
     public ResponseEntity<?> logoutCustomer(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -58,7 +55,6 @@ public class UserController {
         }       
     }
 
-    
     @PutMapping("/setting")
     public ResponseEntity<?> editSetting(@RequestBody User user) {
 
