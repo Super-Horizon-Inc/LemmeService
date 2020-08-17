@@ -1,32 +1,32 @@
-package com.super_horizon;
+// package com.super_horizon;
 
-import com.super_horizon.lemme.repositories.CustomerRepositoryTest;
-import com.super_horizon.lemme.services.EmailServiceTest;
-import com.super_horizon.lemme.services.UserServiceTest;
+// import com.super_horizon.lemme.repositories.CustomerRepositoryTest;
+// import com.super_horizon.lemme.services.EmailServiceTest;
+// import com.super_horizon.lemme.services.UserServiceTest;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class ServerApplicationTests {
+// @SpringBootTest
+// class ServerApplicationTests {
 
-    @Autowired
-    private CustomerRepositoryTest customerRepositoryTest;
+//     @Autowired
+//     private CustomerRepositoryTest customerRepositoryTest;
 
-    @Autowired
-    private EmailServiceTest emailServiceTest;
+//     @Autowired
+//     private EmailServiceTest emailServiceTest;
 
-    @Autowired
-    private UserServiceTest userServiceTest;
+//     @Autowired
+//     private UserServiceTest userServiceTest;
 
-	@Test
-	void contextLoads() {
-        // customerRepositoryTest.shouldReturnNull();
-        // emailServiceTest.shouldNotSendEmail();
-        // emailServiceTest.shouldSendEmail();
-        // userServiceTest.shouldNotBeNewCustomer();
-        // userServiceTest.shouldBeNewCustomer();
-	}
+// 	@Test
+// 	void contextLoads() {
+//         // customerRepositoryTest.shouldReturnNull();
+//         // emailServiceTest.shouldNotSendEmail();
+//         // emailServiceTest.shouldSendEmail();
+//         // userServiceTest.shouldNotBeNewCustomer();
+//         // userServiceTest.shouldBeNewCustomer();
+// 	}
 
-}
+// }
