@@ -111,6 +111,12 @@
             <artifactId>spring-data-mongodb</artifactId>
             <version>3.0.2.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>7.54.2</version>
+        </dependency>
         
 
 	</dependencies>

@@ -4,7 +4,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -16,8 +15,9 @@ import com.super_horizon.lemme.repositories.CustomerRepository;
 import com.super_horizon.lemme.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import com.super_horizon.lemme.services.*;
 
 
 @Configuration
@@ -30,16 +30,18 @@ public class Scheduler {
     @Autowired
     private CustomerRepository customerRepository;
 
-    // @Autowired
-    // private EmailService emailService;
+    @Autowired
+    SmsService smsService;
     
     @Scheduled(fixedRate = 5000)
     public void sendDiscountEmails() {
 
         try {
 
-            List<SimpleMailMessage> emails = new ArrayList<SimpleMailMessage>();
             List<User> users = userRepository.findAll();
+
+            // Temporary sender
+            String sender = "+12513069663";
             
             for (User user : users) {
                 Discount discount = user.getDiscount();
@@ -49,71 +51,49 @@ public class Scheduler {
                             for (String ref: user.getCustomersRef()) {
                                 Customer customer = customerRepository.findById(ref).get();
                                 if (customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
-                                    SimpleMailMessage email = new SimpleMailMessage();
-                                    
-                                    email.setTo(customer.getEmail());
-                                    email.setSubject("Lemmein");
-                                    email.setText("Hello " + customer.getFirstName() + ",\n\n You have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.");
-                                    emails.add(email);
-                                }
-                                                    
+                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    String mess = "Hello " + customer.getFirstName() + ",\nYou have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    smsService.sendSms(recipient, sender, mess);
+                                }                              
                             }
                             break;
                         }
-
                         case "DOB" : {
                             for (String ref: user.getCustomersRef()) {
                                 Customer customer = customerRepository.findById(ref).get();
-                                //LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMMM d, yyyy").toFormatter(Locale.US));
                                 LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MM/dd/yyyy").toFormatter(Locale.US));
                                 LocalDate now = LocalDate.now().plusDays(7);
                                 
                                 if (dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
-                                    SimpleMailMessage email = new SimpleMailMessage();
-                                    
-                                    email.setTo(customer.getEmail());
-                                    email.setSubject("Lemmein");
-                                    email.setText("Hello " + customer.getFirstName() + ",\n\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.");
-                                    emails.add(email);
-                                }
-                                                    
+                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    String mess = "Hello " + customer.getFirstName() + ",\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    smsService.sendSms(recipient, sender, mess);
+                                }                                                  
                             }
                             break;
                         }
-
                         default : {
                             for (String ref: user.getCustomersRef()) {
                                 Customer customer = customerRepository.findById(ref).get();
                                 if (customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
-                                    SimpleMailMessage email = new SimpleMailMessage();
-                                    
-                                    email.setTo(customer.getEmail());
-                                    email.setSubject("Lemmein");
-                                    email.setText("Hello " + customer.getFirstName() + ",\n\nYou have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.");
-                                    emails.add(email);
-                                }
-                                
-                                //LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMMM d, yyyy").toFormatter(Locale.US));
+                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    String mess = "Hello " + customer.getFirstName() + ",\nYou have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    smsService.sendSms(recipient, sender, mess);
+                                }                       
                                 LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MM/dd/yyyy").toFormatter(Locale.US));
                                 LocalDate now = LocalDate.now().plusDays(7);
-
                                 if (dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
-                                    SimpleMailMessage email = new SimpleMailMessage();
-                                    
-                                    email.setTo(customer.getEmail());
-                                    email.setSubject("Lemmein");
-                                    email.setText("Hello " + customer.getFirstName() + ",\n\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.");
-                                    emails.add(email);
-                                }
-                                
+                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    String mess = "Hello " + customer.getFirstName() + ",\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    smsService.sendSms(recipient, sender, mess);
+                                }           
                             }
                             break;
                         }
-
                     }
-                }               
+                }
+                //smsService.sendSms(recipients, "+12513069663", mess);            
             }
-            // emailService.sendEmails(emails);
         }
         catch (NoSuchElementException e) {
         }
