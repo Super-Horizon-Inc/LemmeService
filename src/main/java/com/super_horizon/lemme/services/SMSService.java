@@ -1,31 +1,51 @@
 package com.super_horizon.lemme.services;
 
+import java.util.*;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.rest.notify.v1.service.Notification;
 import com.twilio.type.PhoneNumber;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 
 @Service
-public class SmsService {
+public class SMSService {
 
-    // Find your Account Sid and Auth Token at twilio.com/console
-    public static final String ACCOUNT_SID =
-            "ACd0e91293b147e766d070dce032d51c12";
-    public static final String AUTH_TOKEN =
-            "a46df5d2e23c55d4f1d91f544d3199f8";
-
-    public SmsService() {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+    // Must use non-static setter to inject value into static variable
+    private static String AccountSid;
+    @Value("${AccountSid}")
+    public void setAccountSid(String accountSid) {
+        AccountSid = accountSid;
     }
 
-    public void sendSms(String recipient, String sender, String mess) {
+    private static String AuthToken;
+    @Value("${AuthToken}")
+    public void setauthToken(String authToken) {
+        AuthToken = authToken;
+    }
 
-        Message message = Message.creator(new PhoneNumber(recipient), // to
-                                            new PhoneNumber(sender), // from
-                                            mess).create();
+    public void sendSms(List<String> phones, String sender, String mess) {
 
-        System.out.println(message.getSid());
+        Twilio.init(AccountSid, AuthToken);
+
+        List<String> recipients = new ArrayList<String>();
+        for(String phone : phones) {
+            recipients.add("{\"binding_type\":\"sms\",\"address\":\"" + phone +"\"}");
+        }
+        
+        Notification notification = Notification.creator(sender)
+                                                .setBody(mess)
+                                                .setToBinding(recipients)
+                                                .create();
+        System.out.println(notification.getSid());
+
+        
+        // Message message = Message.creator(new PhoneNumber(recipient), // to
+        //                                     //new PhoneNumber(sender), // from
+        //                                     sender,
+        //                                     mess).create();
+        // System.out.println(message.getSid());
 
     }
 
