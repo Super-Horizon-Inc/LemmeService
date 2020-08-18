@@ -4,9 +4,10 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.util.List;
+import java.util.*;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.super_horizon.lemme.models.Customer;
 import com.super_horizon.lemme.models.Discount;
@@ -21,7 +22,7 @@ import com.super_horizon.lemme.services.*;
 
 
 @Configuration
-//@EnableScheduling
+@EnableScheduling
 public class Scheduler {
 
     @Autowired
@@ -31,19 +32,28 @@ public class Scheduler {
     private CustomerRepository customerRepository;
 
     @Autowired
-    SmsService smsService;
+    SMSService smsService;
+
+    // Temporary sender
+    @Value("${MessageSid}")
+    private String messageSid;
+
+    @Value("${NotifySid}")
+    private String notifySid;
+    
     
     @Scheduled(fixedRate = 5000)
-    public void sendDiscountEmails() {
+    public void sendDiscountSms() {
 
         try {
 
-            List<User> users = userRepository.findAll();
+            List<String> visitTimesPhones = new ArrayList<String>();
+            List<String> dobPhones = new ArrayList<String>();
 
-            // Temporary sender
-            String sender = "+12513069663";
+            List<User> users = userRepository.findAll();
             
             for (User user : users) {
+                
                 Discount discount = user.getDiscount();
                 if (discount.getAmount() != 0) {
                     switch (user.getDiscount().getBy()) {
@@ -51,9 +61,10 @@ public class Scheduler {
                             for (String ref: user.getCustomersRef()) {
                                 Customer customer = customerRepository.findById(ref).get();
                                 if (customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
-                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
-                                    String mess = "Hello " + customer.getFirstName() + ",\nYou have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
-                                    smsService.sendSms(recipient, sender, mess);
+                                    // String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    // String mess = "Hello " + customer.getFirstName() + ",\nYou have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    // smsService.sendSms(recipient, messageSid, mess);
+                                    visitTimesPhones.add(smsService.getFormattedPhone(customer.getPhoneNumber()));
                                 }                              
                             }
                             break;
@@ -65,9 +76,10 @@ public class Scheduler {
                                 LocalDate now = LocalDate.now().plusDays(7);
                                 
                                 if (dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
-                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
-                                    String mess = "Hello " + customer.getFirstName() + ",\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
-                                    smsService.sendSms(recipient, sender, mess);
+                                    // String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    // String mess = "Hello " + customer.getFirstName() + ",\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    // smsService.sendSms(recipient, messageSid, mess);
+                                    dobPhones.add(smsService.getFormattedPhone(customer.getPhoneNumber()));
                                 }                                                  
                             }
                             break;
@@ -76,24 +88,31 @@ public class Scheduler {
                             for (String ref: user.getCustomersRef()) {
                                 Customer customer = customerRepository.findById(ref).get();
                                 if (customer.getVisitCounter() >= user.getDiscount().getVisitTimes()) {
-                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
-                                    String mess = "Hello " + customer.getFirstName() + ",\nYou have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
-                                    smsService.sendSms(recipient, sender, mess);
+                                    // String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    // String mess = "Hello " + customer.getFirstName() + ",\nYou have been visiting us for " + customer.getVisitCounter() + " times. Please visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    // smsService.sendSms(recipient, messageSid, mess);
+                                    visitTimesPhones.add(smsService.getFormattedPhone(customer.getPhoneNumber()));                             
                                 }                       
                                 LocalDate dob = LocalDate.parse(customer.getDob(), new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MM/dd/yyyy").toFormatter(Locale.US));
                                 LocalDate now = LocalDate.now().plusDays(7);
                                 if (dob.getDayOfMonth() == now.getDayOfMonth() && dob.getMonthValue() == now.getMonthValue()) {
-                                    String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
-                                    String mess = "Hello " + customer.getFirstName() + ",\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
-                                    smsService.sendSms(recipient, sender, mess);
+                                    // String recipient = smsService.getFormattedPhone(customer.getPhoneNumber());
+                                    // String mess = "Hello " + customer.getFirstName() + ",\nYour birthday is on: " + customer.getDob() + " right?\nPlease visit us again because we have " + this.getDiscountAmount(discount.getType(), discount.getAmount()) + " discount for you.";
+                                    // smsService.sendSms(recipient, messageSid, mess);
+                                    dobPhones.add(smsService.getFormattedPhone(customer.getPhoneNumber()));
                                 }           
                             }
                             break;
                         }
-                    }
+                    }    
                 }
-                //smsService.sendSms(recipients, "+12513069663", mess);            
+                //smsService.sendSms(recipients, "+12513069663", mess);  
             }
+            // Binding: send many and no filter
+            // Separate: Specific message
+            smsService.sendSms(visitTimesPhones,notifySid,"Hi, How are you?");
+            smsService.sendSms(dobPhones,notifySid,"Hi, How are you?");
+
         }
         catch (NoSuchElementException e) {
         }
@@ -103,11 +122,11 @@ public class Scheduler {
         }
         catch (UnsupportedOperationException e) {
         }
-        catch (ClassCastException e) {         
+        catch (ClassCastException e) { 
         }
-        catch (DateTimeParseException e) {        
+        catch (DateTimeParseException e) {      
         }
-        catch (DateTimeException e) {       
+        catch (DateTimeException e) {      
         }
 
     }
