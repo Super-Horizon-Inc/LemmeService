@@ -14,7 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.super_horizon.lemme.security.jwt.AuthEntryPointJwt;
 import com.super_horizon.lemme.security.jwt.*;
 import com.super_horizon.lemme.security.services.UserDetailsServiceImpl;
@@ -36,6 +37,15 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 		return new AuthTokenFilter();
     }
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+			}
+		};
+	}
     
     @Override
 	protected void configure(HttpSecurity http) throws Exception {

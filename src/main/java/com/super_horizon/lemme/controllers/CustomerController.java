@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.super_horizon.lemme.models.Customer;
 import com.super_horizon.lemme.services.*;
 
-
 @RestController
 @RequestMapping("/lemme/customers")
 public class CustomerController {
@@ -17,12 +16,27 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping
     public ResponseEntity<Customer> getOrAdd(@RequestBody Map<String, String> query) {
         Customer customer = null;
         try {
             customer = customerService.getOrAdd(query);
             return new ResponseEntity<> (customer, HttpStatus.CREATED);
+        }
+        catch (Exception ex) {
+            return new ResponseEntity<> (null, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAll(@RequestParam(name="username", required = true) String username) {
+        List<Customer> customers = new ArrayList<Customer>();
+        try {
+            customers = userService.findCustomersByUsername(username);
+            return new ResponseEntity<> (customers, HttpStatus.OK);
         }
         catch (Exception ex) {
             return new ResponseEntity<> (null, HttpStatus.EXPECTATION_FAILED);
