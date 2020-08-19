@@ -22,7 +22,7 @@ import com.super_horizon.lemme.services.*;
 
 
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 public class Scheduler {
 
     @Autowired
