@@ -12,13 +12,13 @@ import com.super_horizon.lemme.services.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/lemme/user/auth")
+@RequestMapping("/lemme/user")
 public class UserController {
 
     @Autowired
     UserService userService;
 
-    @PostMapping("/signin")
+    @PostMapping("/auth/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         if (!userService.existsByUsername(loginRequest.getUsername())) {
@@ -30,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok(jwtResponse);
 	}
  
-	@PostMapping("/signup")
+	@PostMapping("/auth/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
         if (userService.existsByUsername(signUpRequest.getUsername())) {
@@ -42,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok(jwtResponse);            
     }
 
-    @PostMapping("/logout")
+    @PostMapping("auth/logout")
     public ResponseEntity<?> logoutCustomer(@Valid @RequestBody LoginRequest loginRequest) {
 
         try {
@@ -61,22 +61,50 @@ public class UserController {
         }       
     }
 
-    @PutMapping("/setting")
+    @PutMapping("/setting/{id}")
     public ResponseEntity<?> editSetting(@RequestBody User user) {
 
         try {
-            userService.authenticateUser(user.getUsername(), user.getPassword());
+            
+            // userService.authenticateUser(user.getUsername(), user.getPassword());
 
-             //need to handle correctly
-             if (userService.authenticateUser(user.getUsername(), user.getPassword()) == null) {
-                throw new Exception();
+            //  //need to handle correctly
+            // if (userService.authenticateUser(user.getUsername(), user.getPassword()) == null) {
+            //     throw new Exception();
+            // }
+            
+            Discount discount = null;
+            if (user.getDiscount() != null) {
+                discount = userService.setting(user);      
             }
-
-            userService.setting(user);
-            return ResponseEntity.ok(new MessageResponse("Setting saved successfully."));
+            else {
+                discount = new Discount(EDiscountBy.valueOf(1).get().toString(),0,0,0);
+            }
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA: "+discount.getBy());
+            //return ResponseEntity.ok(new MessageResponse("Setting saved successfully."));
+            return ResponseEntity.ok(discount);
         }
         catch (Exception e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Wrong password."));
+            System.out.println("BBB: ");
+            return ResponseEntity.badRequest().body(new MessageResponse("Error."));
+        }
+    }
+
+    @PutMapping("/setting")
+    public ResponseEntity<?> setting(@RequestBody User user) {
+
+        try {      
+            Discount discount = null;
+            if (user.getDiscount() != null) {
+                discount = userService.setting(user);      
+            }
+            else {
+                discount = new Discount(EDiscountBy.valueOf(1).get().toString(),0,0,0);
+            }
+            return ResponseEntity.ok(discount);
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error."));
         }
     }
    

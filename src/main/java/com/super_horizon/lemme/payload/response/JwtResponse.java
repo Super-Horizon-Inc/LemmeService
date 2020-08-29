@@ -11,13 +11,15 @@ public class JwtResponse {
     private String username;
     private List<Customer> customers;
     private Discount discount;
+    private String userId;
 
     
-    public JwtResponse(String accessToken, String username, Discount discount, List<Customer> customers) {
+    public JwtResponse(String accessToken, String username, Discount discount, List<Customer> customers, String userId) {
 		this.token = accessToken;
         this.username = username;
         this.discount = discount;
         this.customers = customers;
+        this.userId = userId;
 	}
 
 	public String getAccessToken() {
@@ -58,6 +60,14 @@ public class JwtResponse {
 
 	public void setCustomers(List<Customer> customers) {
 		this.customers = customers;
+    }
+    
+    public String getUserId() {
+		return this.userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }

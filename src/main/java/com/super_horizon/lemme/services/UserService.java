@@ -92,8 +92,9 @@ public class UserService {
             this.setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
             Discount discount = userRepository.findByUsername(username).get().getDiscount();
+            String userId = userRepository.findByUsername(username).get().getId();
             discount.setBy(EDiscountBy.valueOf(discount.getBy()).getValue().toString());
-            return new JwtResponse(jwt, username, discount, this.findCustomersByUsername(username));
+            return new JwtResponse(jwt, username, discount, this.findCustomersByUsername(username), userId);
         }
         catch (NoSuchElementException e) {
         }
@@ -117,13 +118,19 @@ public class UserService {
     }
 
     @Transactional
-    public void setting(User user) {
+    // just changed return type
+    public Discount setting(User user) {
         try{
             Optional<User> optUser = userRepository.findByUsername(user.getUsername());
             User _user = optUser.get();
-            user.getDiscount().setBy(EDiscountBy.valueOf(Integer.parseInt(user.getDiscount().getBy())).get().toString());
+
+            //user.getDiscount().setBy(EDiscountBy.valueOf(Integer.parseInt(user.getDiscount().getBy())).get().toString());
+            
             _user.setDiscount(user.getDiscount());
             userRepository.save(_user);
+            Discount discount = _user.getDiscount();
+            
+            return discount;
         }
         catch (NoSuchElementException e) {
         }
@@ -133,6 +140,8 @@ public class UserService {
         }
         catch (NullPointerException e) {
         }
+        // just added
+        return null;
     }
     
     public boolean isNewCustomer(String username, String customerId) {
